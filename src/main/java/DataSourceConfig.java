@@ -12,31 +12,30 @@ import java.util.Arrays;
 public class DataSourceConfig {
     private final SecretClient secretClient;
     private final Environment environment;
-    private final boolean isLocal;
+    private final boolean isProd;
 
     public DataSourceConfig(Environment environment) {
         this.environment = environment;
-        if (Arrays.stream(environment.getActiveProfiles()).noneMatch(env -> (env.equalsIgnoreCase("local")))) {
+        this.isProd = Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> (env.equalsIgnoreCase("dev") || env.equalsIgnoreCase("test") || env.equalsIgnoreCase("prod")));
+        if (isProd) {
             this.secretClient = new SecretClientBuilder()
                     .vaultUrl(environment.getProperty("spring.cloud.azure.keyvault.secret.endpoint"))
                     .credential(new DefaultAzureCredentialBuilder().build())
                     .buildClient();
-            this.isLocal = false;
         } else {
             this.secretClient = null;
-            this.isLocal = true;
         }
     }
 
     @Bean
     public HikariDataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        if (isLocal) {
+        if (isProd) {
+            dataSource.setJdbcUrl(secretClient.getSecret("ConnectionString").getValue());
+        } else {
             dataSource.setJdbcUrl(environment.getProperty("spring.datasource.url"));
             dataSource.setUsername(environment.getProperty("spring.datasource.username"));
             dataSource.setPassword(environment.getProperty("spring.datasource.password"));
-        } else {
-            dataSource.setJdbcUrl(secretClient.getSecret("ConnectionString").getValue());
         }
 
         return dataSource;
