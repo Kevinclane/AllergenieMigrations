@@ -27,6 +27,7 @@ public class MigrationsApplication implements CommandLineRunner {
 	public void run(String... args) {
 		String[] activeProfiles = environment.getActiveProfiles();
 
+
 		if (activeProfiles.length == 0) {
 			logger.info("No active profiles");
 		}
