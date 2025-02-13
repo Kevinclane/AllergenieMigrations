@@ -2,9 +2,6 @@ package com.allergenie.migrations.entities;
 
 import jakarta.persistence.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 @Entity
 @Table(name = "menu")
 public class Menu {
