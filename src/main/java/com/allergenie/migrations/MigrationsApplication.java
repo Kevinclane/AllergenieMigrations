@@ -1,5 +1,6 @@
 package com.allergenie.migrations;
 
+import com.azure.security.keyvault.secrets.SecretClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,9 +15,11 @@ public class MigrationsApplication implements CommandLineRunner {
 
 	private final Environment environment;
 	private static final Logger logger = Logger.getLogger(ClassName.class.getName());
+	private final SecretClient secretClient;
 
-	public MigrationsApplication(Environment environment) {
+	public MigrationsApplication(Environment environment, SecretClient secretClient) {
 		this.environment = environment;
+		this.secretClient = secretClient;
 	}
 
 	public static void main(String[] args) {
@@ -26,7 +29,7 @@ public class MigrationsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		String[] activeProfiles = environment.getActiveProfiles();
-			logger.info("Temp");
+		logger.info("CS: " + secretClient.getSecret("ConnectionString").getValue());
 
 		if (activeProfiles.length == 0) {
 			logger.info("No active profiles");
