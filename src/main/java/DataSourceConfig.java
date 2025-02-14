@@ -1,6 +1,7 @@
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,17 +28,35 @@ public class DataSourceConfig {
         }
     }
 
+//    @Bean
+//    public HikariDataSource dataSource() {
+//        HikariDataSource dataSource = new HikariDataSource();
+//        if (isProd) {
+//            dataSource.setJdbcUrl(secretClient.getSecret("ConnectionString").getValue());
+//        } else {
+//            dataSource.setJdbcUrl(environment.getProperty("spring.datasource.url"));
+//            dataSource.setUsername(environment.getProperty("spring.datasource.username"));
+//            dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+//        }
+//
+//        return dataSource;
+//    }
+
     @Bean
     public HikariDataSource dataSource() {
-        HikariDataSource dataSource = new HikariDataSource();
-        if (isProd) {
-            dataSource.setJdbcUrl(secretClient.getSecret("ConnectionString").getValue());
+
+        HikariConfig config = new HikariConfig();
+        if(isProd) {
+            config.setJdbcUrl(secretClient.getSecret("ConnectionString").getValue());
         } else {
-            dataSource.setJdbcUrl(environment.getProperty("spring.datasource.url"));
-            dataSource.setUsername(environment.getProperty("spring.datasource.username"));
-            dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+            config.setJdbcUrl(environment.getProperty("spring.datasource.url"));
+            config.setUsername(environment.getProperty("spring.datasource.username"));
+            config.setPassword(environment.getProperty("spring.datasource.password"));
         }
 
-        return dataSource;
+        config.setMaximumPoolSize(10);  // Set maximum pool size if needed
+        config.setIdleTimeout(30000);   // Optional: Set idle timeout in milliseconds
+
+        return new HikariDataSource(config);
     }
 }

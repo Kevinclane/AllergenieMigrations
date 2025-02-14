@@ -15,11 +15,9 @@ public class MigrationsApplication implements CommandLineRunner {
 
 	private final Environment environment;
 	private static final Logger logger = Logger.getLogger(ClassName.class.getName());
-	private final SecretClient secretClient;
 
-	public MigrationsApplication(Environment environment, SecretClient secretClient) {
+	public MigrationsApplication(Environment environment) {
 		this.environment = environment;
-		this.secretClient = secretClient;
 	}
 
 	public static void main(String[] args) {
@@ -29,7 +27,6 @@ public class MigrationsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		String[] activeProfiles = environment.getActiveProfiles();
-		logger.info("CS: " + secretClient.getSecret("ConnectionString").getValue());
 
 		if (activeProfiles.length == 0) {
 			logger.info("No active profiles");
