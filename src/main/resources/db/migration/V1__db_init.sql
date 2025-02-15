@@ -66,14 +66,3 @@ CREATE TABLE menu_item_allergen(
     FOREIGN KEY (menu_item_id) references menu_item(id),
     FOREIGN KEY (allergen_id) references allergen(id)
 );
-
---INSERT INTO allergen(name)
---VALUES("Milk"),
---("Eggs"),
---("Fish"),
---("Shellfish"),
---("Tree Nuts"),
---("Peanuts"),
---("Wheat"),
---("Soybeans"),
---("Sesame");
