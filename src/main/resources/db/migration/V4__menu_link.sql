@@ -1,0 +1,2 @@
+ALTER TABLE menu
+ADD COLUMN is_linked TINYINT NOT NULL DEFAULT 0 AFTER is_active;
