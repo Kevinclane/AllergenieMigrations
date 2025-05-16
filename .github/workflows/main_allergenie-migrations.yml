@@ -44,5 +44,6 @@ jobs:
             registry-password: ${{ secrets.REGISTRY_PASSWORD }}
             name: allergenie-migrations
             location: 'east us'
-
+            environment-variables: |
+                  SPRING_PROFILES_ACTIVE=dev
           
